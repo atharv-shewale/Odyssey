@@ -1,0 +1,32 @@
+{
+    "balance": 1000091.0319833814,
+    "positions": {},
+    "history": [
+        {
+            "order_id": "mock_1774816088857",
+            "symbol": "MCX:GOLDM24OCTFUT",
+            "action": "BUY",
+            "volume": 1.0,
+            "entry_price": 2000.7167460988487,
+            "entry_time": "2026-03-30T01:58:08.857944",
+            "sl": null,
+            "tp": null,
+            "exit_price": 2000.0,
+            "pnl": -0.7167460988487164,
+            "exit_time": "2026-03-30T01:58:09.864453"
+        },
+        {
+            "order_id": "mock_1775658441692",
+            "symbol": "MCX:GOLDM24OCTFUT",
+            "action": "BUY",
+            "volume": 1.0,
+            "entry_price": 74046.61088051982,
+            "entry_time": "2026-04-08T19:57:21.692948",
+            "sl": null,
+            "tp": null,
+            "exit_price": 74138.35961,
+            "pnl": 91.7487294801831,
+            "exit_time": "2026-04-08T19:57:26.707573"
+        }
+    ]
+}

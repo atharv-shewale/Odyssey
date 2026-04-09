@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "odyssey-v2"
+version = "2.0.0"
+description = "Algorithmic trading platform with ML-powered strategy engine"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+    "joblib>=1.3.0",
+    "psycopg2-binary>=2.9.0",
+    "redis>=5.0.0",
+    "kafka-python>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+mt5 = ["MetaTrader5>=5.0.45"]
+gateway = ["fastapi>=0.104.0", "uvicorn[standard]>=0.24.0", "websockets>=12.0"]
+dev = ["pytest>=7.4.0"]
+dl = ["torch>=2.0.0"]
+
+[tool.setuptools.packages.find]
+include = ["shared*", "data_service*", "ml_engine*", "strategy_engine*", "trading_executor*"]
+
+[tool.setuptools.package-dir]
+"shared" = "shared/python"

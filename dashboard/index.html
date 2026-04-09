@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODYSSEY v2 — Command Center</title>
+    <meta name="description" content="Odyssey v2 institutional-grade trading terminal with real-time ML signals, risk analytics, and sentiment analysis">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- TOP BAR -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <div class="logo">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">ODYSSEY</span>
+                <span class="logo-version">v2</span>
+            </div>
+            <div class="system-status" id="systemStatus">
+                <span class="status-dot"></span>
+                <span>CONNECTING</span>
+            </div>
+        </div>
+        <div class="top-bar-center">
+            <div class="account-metrics">
+                <div class="metric">
+                    <span class="metric-label">BALANCE</span>
+                    <span class="metric-value" id="accountBalance">$100,000.00</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">EQUITY</span>
+                    <span class="metric-value" id="accountEquity">$100,000.00</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">P&L</span>
+                    <span class="metric-value" id="accountPnl">$0.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <span class="clock" id="clock"></span>
+        </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <main class="dashboard-grid">
+        <!-- PANEL 1: ML Signal Feed -->
+        <section class="panel signal-panel" id="signalPanel">
+            <div class="panel-header">
+                <h2>ML SIGNAL FEED</h2>
+                <span class="panel-badge" id="signalModel">LSTM v1</span>
+            </div>
+            <div class="panel-body">
+                <div class="signal-grid" id="signalGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL 2: Risk Heatmap -->
+        <section class="panel risk-panel" id="riskPanel">
+            <div class="panel-header">
+                <h2>RISK MATRIX</h2>
+                <span class="panel-badge risk-badge" id="circuitBreakerLevel">NORMAL</span>
+            </div>
+            <div class="panel-body">
+                <div class="risk-gauges" id="riskGauges">
+                    <div class="gauge-item">
+                        <div class="gauge-label">VaR (99%)</div>
+                        <div class="gauge-bar"><div class="gauge-fill" id="varGauge" style="width:0%"></div></div>
+                        <div class="gauge-value" id="varValue">$0</div>
+                    </div>
+                    <div class="gauge-item">
+                        <div class="gauge-label">DRAWDOWN</div>
+                        <div class="gauge-bar"><div class="gauge-fill warning" id="ddGauge" style="width:0%"></div></div>
+                        <div class="gauge-value" id="ddValue">0%</div>
+                    </div>
+                    <div class="gauge-item">
+                        <div class="gauge-label">PORTFOLIO HEAT</div>
+                        <div class="gauge-bar"><div class="gauge-fill" id="heatGauge" style="width:0%"></div></div>
+                        <div class="gauge-value" id="heatValue">0%</div>
+                    </div>
+                    <div class="gauge-item">
+                        <div class="gauge-label">POSITIONS</div>
+                        <div class="gauge-bar"><div class="gauge-fill" id="posGauge" style="width:0%"></div></div>
+                        <div class="gauge-value" id="posValue">0/5</div>
+                    </div>
+                </div>
+                <div class="risk-rejections" id="riskRejections">
+                    <!-- Rejection alerts -->
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL 3: Sentiment Monitor -->
+        <section class="panel sentiment-panel" id="sentimentPanel">
+            <div class="panel-header">
+                <h2>SENTIMENT RADAR</h2>
+                <span class="panel-badge" id="headlineCount">0 headlines</span>
+            </div>
+            <div class="panel-body">
+                <div class="sentiment-currencies" id="sentimentCurrencies">
+                    <!-- Currency sentiment bars -->
+                </div>
+                <div class="sentiment-pairs" id="sentimentPairs">
+                    <!-- Pair sentiment -->
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL 4: Trade Blotter -->
+        <section class="panel blotter-panel" id="blotterPanel">
+            <div class="panel-header">
+                <h2>TRADE BLOTTER</h2>
+                <span class="panel-badge" id="blotterCount">0 trades</span>
+            </div>
+            <div class="panel-body">
+                <table class="blotter-table">
+                    <thead>
+                        <tr>
+                            <th>TIME</th>
+                            <th>SYMBOL</th>
+                            <th>SIDE</th>
+                            <th>VOL</th>
+                            <th>PRICE</th>
+                            <th>MODEL</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blotterBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PANEL 5: Explainable AI (XAI) -->
+        <section class="panel xai-panel" id="xaiPanel">
+            <div class="panel-header">
+                <h2>EXPLAINABLE AI (SHAP / ATTENTION)</h2>
+                <span class="panel-badge attention-badge" id="xaiModel">ATTENTION-LSTM</span>
+            </div>
+            <div class="panel-body">
+                <div class="xai-container">
+                    <div class="xai-symbol-header" id="xaiSymbolHeader">WAITING FOR PREDICTION...</div>
+                    <div class="xai-bars" id="xaiBars">
+                        <!-- SHAP bars populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BOTTOM STATUS BAR -->
+    <footer class="bottom-bar">
+        <div class="bottom-left">
+            <span class="service-badge" id="svcData">DATA</span>
+            <span class="service-badge" id="svcSentiment">SENTIMENT</span>
+            <span class="service-badge" id="svcML">ML</span>
+            <span class="service-badge" id="svcStrategy">STRATEGY</span>
+            <span class="service-badge" id="svcRisk">RISK</span>
+            <span class="service-badge" id="svcExecutor">EXECUTOR</span>
+        </div>
+        <div class="bottom-right">
+            <span id="wsLatency">WS: --ms</span>
+            <span id="lastUpdate">Last update: --</span>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

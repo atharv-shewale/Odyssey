@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # -----------------------------------
+  # INFRASTRUCTURE (Isolated Network)
+  # -----------------------------------
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - internal_net
+    volumes:
+      - redis_data:/data
+    restart: always
+
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    networks:
+      - internal_net
+    volumes:
+      - kafka_data:/bitnami/kafka
+    restart: always
+
+  questdb:
+    image: questdb/questdb:latest
+    networks:
+      - internal_net
+    volumes:
+      - questdb_data:/root/.questdb
+    restart: always
+
+  # -----------------------------------
+  # MICROSERVICES (No open ports)
+  # -----------------------------------
+  data_feeder:
+    build: .
+    command: python data-service/collectors/tick_receiver.py
+    networks:
+      - internal_net
+      - external_net # Needs to reach Fyers API
+    depends_on:
+      - redis
+      - kafka
+
+  ml_engine:
+    build: .
+    command: python ml-engine/ml_engine.py
+    networks:
+      - internal_net
+    depends_on:
+      - redis
+      - kafka
+
+  risk_engine:
+    build: .
+    command: python risk-engine/risk_engine.py
+    networks:
+      - internal_net
+    depends_on:
+      - redis
+      - kafka
+
+  executor:
+    build: .
+    command: python trading-executor/executor/async_executor.py
+    networks:
+      - internal_net
+      - external_net # Needs to reach broker execution endpoints
+    depends_on:
+      - redis
+      - kafka
+
+  # -----------------------------------
+  # GATEWAY (Only exposed service)
+  # -----------------------------------
+  api_gateway:
+    build: .
+    command: uvicorn gateway.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    networks:
+      - internal_net
+      - public_net # The only service listening outwardly
+    depends_on:
+      - redis
+      - kafka
+
+networks:
+  internal_net:
+    internal: true  # True isolation - no outbound or inbound internet access
+  external_net:     # Outbound only access (for APIs and broker connections)
+  public_net:       # Inbound access for the gateway
+
+volumes:
+  redis_data:
+  kafka_data:
+  questdb_data:

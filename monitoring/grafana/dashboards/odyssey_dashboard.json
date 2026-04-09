@@ -1,0 +1,64 @@
+{
+  "title": "Odyssey v2 - System Dashboard",
+  "tags": ["trading"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Account Balance",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "odyssey_account_balance", "refId": "A" }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Account Equity",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 0 },
+      "targets": [
+        { "expr": "odyssey_account_equity", "refId": "A" }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Daily PnL",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 0 },
+      "targets": [
+        { "expr": "odyssey_daily_pnl", "refId": "A" }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Total Processed Events",
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "sum(odyssey_events_processed_total)", "refId": "A" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "ML Signal Strengths",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+      "targets": [
+        {
+          "expr": "odyssey_signal_strength",
+          "legendFormat": "{{symbol}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Active Positions via Broker",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+      "targets": [
+        {
+          "expr": "odyssey_active_positions",
+          "legendFormat": "{{symbol}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 30
+}

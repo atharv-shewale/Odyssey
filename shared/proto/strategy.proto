@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package strategy;
+
+// ==========================================
+// Strategy Service
+// ==========================================
+service StrategyService {
+  rpc GenerateSignal(SignalRequest) returns (SignalResponse);
+  rpc GetActiveStrategies(ActiveStrategiesRequest) returns (ActiveStrategiesResponse);
+  rpc ActivateStrategy(ActivateStrategyRequest) returns (ActivateStrategyResponse);
+  rpc DeactivateStrategy(DeactivateStrategyRequest) returns (DeactivateStrategyResponse);
+  rpc GetStrategyPerformance(PerformanceRequest) returns (PerformanceResponse);
+  rpc ExplainSignal(ExplainSignalRequest) returns (ExplainSignalResponse);
+}
+
+// ==========================================
+// Signal Messages
+// ==========================================
+message SignalRequest {
+  string symbol = 1;
+  string strategy_id = 2;
+  map<string, double> market_data = 3;
+  map<string, double> indicators = 4;
+  double ml_prediction = 5;
+  double ml_confidence = 6;
+}
+
+message SignalResponse {
+  SignalType signal = 1;
+  double confidence = 2;
+  double suggested_entry = 3;
+  double suggested_stop_loss = 4;
+  double suggested_take_profit = 5;
+  double position_size = 6;
+  string reason = 7;
+  int64 timestamp = 8;
+}
+
+enum SignalType {
+  NO_SIGNAL = 0;
+  BUY = 1;
+  SELL = 2;
+  CLOSE_LONG = 3;
+  CLOSE_SHORT = 4;
+}
+
+// ==========================================
+// Strategy Management Messages
+// ==========================================
+message ActiveStrategiesRequest {
+  string symbol = 1;  // Optional filter
+}
+
+message ActiveStrategiesResponse {
+  repeated StrategyInfo strategies = 1;
+}
+
+message StrategyInfo {
+  string strategy_id = 1;
+  string name = 2;
+  string description = 3;
+  bool is_active = 4;
+  repeated string symbols = 5;
+  map<string, string> parameters = 6;
+  double win_rate = 7;
+  double total_trades = 8;
+}
+
+message ActivateStrategyRequest {
+  string strategy_id = 1;
+  repeated string symbols = 2;
+  map<string, string> parameters = 3;
+}
+
+message ActivateStrategyResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DeactivateStrategyRequest {
+  string strategy_id = 1;
+}
+
+message DeactivateStrategyResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ==========================================
+// Performance Messages
+// ==========================================
+message PerformanceRequest {
+  string strategy_id = 1;
+  int64 start_date = 2;
+  int64 end_date = 3;
+}
+
+message PerformanceResponse {
+  string strategy_id = 1;
+  int32 total_trades = 2;
+  int32 winning_trades = 3;
+  int32 losing_trades = 4;
+  double win_rate = 5;
+  double total_pnl = 6;
+  double average_win = 7;
+  double average_loss = 8;
+  double profit_factor = 9;
+  double sharpe_ratio = 10;
+  double max_drawdown = 11;
+}
+
+// ==========================================
+// Explanation Messages
+// ==========================================
+message ExplainSignalRequest {
+  string symbol = 1;
+  SignalType signal = 2;
+  map<string, double> market_data = 3;
+  map<string, double> indicators = 4;
+}
+
+message ExplainSignalResponse {
+  string explanation = 1;
+  repeated ReasonItem reasons = 2;
+  map<string, double> contributing_factors = 3;
+}
+
+message ReasonItem {
+  string factor = 1;
+  double weight = 2;
+  string description = 3;
+}

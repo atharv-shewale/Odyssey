@@ -1,0 +1,72 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Odyssey v2 Backtest: DUMMY_WFO M1</title>
+            <style>
+                body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+                h1 { font-family: 'JetBrains Mono', monospace; color: #38bdf8; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+                .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+                .metric { background: #1e293b; padding: 15px; border-radius: 6px; border-left: 4px solid #38bdf8; }
+                .metric.positive { border-left-color: #10b981; }
+                .metric.negative { border-left-color: #ef4444; }
+                .label { font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 600; list-style: 1px; margin-bottom: 5px; }
+                .value { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: bold; }
+                .chart-container { background: #1e293b; padding: 20px; border-radius: 6px; margin-bottom: 30px; height: 300px; }
+                table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+                th, td { padding: 10px; border-bottom: 1px solid #334155; text-align: left; }
+                th { color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+                .buy { color: #10b981; } .sell { color: #ef4444; }
+                .profit { color: #10b981; } .loss { color: #ef4444; }
+            </style>
+        </head>
+        <body>
+            <h1>ODYSSEY v2 // BACKTEST REPORT // DUMMY_WFO M1</h1>
+            
+            <div class="grid">
+                <div class="metric negative">
+                    <div class="label">Net Profit</div>
+                    <div class="value">$0.00 (0.0%)</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Win Rate</div>
+                    <div class="value">0.0%</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Profit Factor</div>
+                    <div class="value">0.00</div>
+                </div>
+                <div class="metric negative">
+                    <div class="label">Max Drawdown</div>
+                    <div class="value">0.00%</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Total Trades</div>
+                    <div class="value">0</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Sharpe Ratio</div>
+                    <div class="value">0.00</div>
+                </div>
+                <div class="metric">
+                    <div class="label">Avg Trade</div>
+                    <div class="value">$0.00</div>
+                </div>
+            </div>
+            
+            <!-- Simple SVG Chart for Equity Curve -->
+            <div class="chart-container">
+                <div class="label">Equity Curve Overview</div>
+                <svg width="100%" height="250" viewBox="0 0 1000 250" preserveAspectRatio="none" style="margin-top: 15px;">
+        
+                </svg>
+            </div>
+            
+            <h2>Last 100 Trades</h2>
+            <table>
+                <tr><th>Time</th><th>Type</th><th>Volume</th><th>Entry</th><th>Exit</th><th>P&L</th></tr>
+        
+            </table>
+        </body>
+        </html>
+        

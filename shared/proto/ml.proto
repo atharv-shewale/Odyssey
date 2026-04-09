@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package ml;
+
+// ==========================================
+// ML Service
+// ==========================================
+service MLService {
+  rpc Predict(PredictionRequest) returns (PredictionResponse);
+  rpc BatchPredict(BatchPredictionRequest) returns (BatchPredictionResponse);
+  rpc GetModelInfo(ModelInfoRequest) returns (ModelInfoResponse);
+  rpc GetConfidence(ConfidenceRequest) returns (ConfidenceResponse);
+  rpc StreamPredictions(StreamPredictionRequest) returns (stream Prediction);
+}
+
+// ==========================================
+// Prediction Messages
+// ==========================================
+message PredictionRequest {
+  string symbol = 1;
+  string model_version = 2;
+  int64 timestamp = 3;
+  map<string, double> features = 4;
+  int32 horizon = 5;  // How many steps ahead
+}
+
+message PredictionResponse {
+  double prediction = 1;
+  double confidence = 2;
+  string model_version = 3;
+  map<string, double> feature_importance = 4;
+  int64 inference_time_ms = 5;
+  repeated double probabilities = 6;  // For classification
+}
+
+message BatchPredictionRequest {
+  repeated PredictionRequest requests = 1;
+}
+
+message BatchPredictionResponse {
+  repeated PredictionResponse predictions = 1;
+  int64 total_inference_time_ms = 2;
+}
+
+// ==========================================
+// Model Info Messages
+// ==========================================
+message ModelInfoRequest {
+  string model_version = 1;
+}
+
+message ModelInfoResponse {
+  string model_name = 1;
+  string model_version = 2;
+  string model_type = 3;
+  int64 trained_date = 4;
+  int32 training_samples = 5;
+  double accuracy = 6;
+  double precision = 7;
+  double recall = 8;
+  double f1_score = 9;
+  repeated string features = 10;
+}
+
+// ==========================================
+// Confidence Messages
+// ==========================================
+message ConfidenceRequest {
+  string symbol = 1;
+  string model_version = 2;
+  int32 lookback_period = 3;  // Days
+}
+
+message ConfidenceResponse {
+  double confidence = 1;
+  double accuracy = 2;
+  int32 samples_count = 3;
+  double mean_error = 4;
+  double std_error = 5;
+}
+
+// ==========================================
+// Streaming Messages
+// ==========================================
+message StreamPredictionRequest {
+  repeated string symbols = 1;
+  string model_version = 2;
+  int32 update_interval_seconds = 3;
+}
+
+message Prediction {
+  string symbol = 1;
+  double value = 2;
+  double confidence = 3;
+  int64 timestamp = 4;
+  string model_version = 5;
+  PredictionDirection direction = 6;
+}
+
+enum PredictionDirection {
+  NEUTRAL = 0;
+  UP = 1;
+  DOWN = 2;
+}

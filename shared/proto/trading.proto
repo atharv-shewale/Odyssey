@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package trading;
+
+// ==========================================
+// Trading Service
+// ==========================================
+service TradingService {
+  rpc GetMarketData(MarketDataRequest) returns (MarketDataResponse);
+  rpc PlaceOrder(OrderRequest) returns (OrderResponse);
+  rpc GetPositions(PositionsRequest) returns (PositionsResponse);
+  rpc GetAccountInfo(AccountRequest) returns (AccountResponse);
+  rpc StreamPrices(StreamRequest) returns (stream PriceUpdate);
+  rpc ClosePosition(ClosePositionRequest) returns (ClosePositionResponse);
+}
+
+// ==========================================
+// Market Data Messages
+// ==========================================
+message MarketDataRequest {
+  string symbol = 1;
+  string timeframe = 2;  // M1, M5, H1, D1
+  int32 limit = 3;
+  int64 start_time = 4;
+  int64 end_time = 5;
+}
+
+message MarketDataResponse {
+  repeated Candle candles = 1;
+  string symbol = 2;
+  int32 total_count = 3;
+}
+
+message Candle {
+  int64 timestamp = 1;
+  double open = 2;
+  double high = 3;
+  double low = 4;
+  double close = 5;
+  int64 volume = 6;
+  double tick_volume = 7;
+  double spread = 8;
+}
+
+// ==========================================
+// Order Messages
+// ==========================================
+message OrderRequest {
+  string symbol = 1;
+  OrderType type = 2;
+  OrderSide side = 3;
+  double volume = 4;
+  double price = 5;           // For limit orders
+  double stop_loss = 6;
+  double take_profit = 7;
+  string strategy_id = 8;
+  string comment = 9;
+  int32 magic_number = 10;
+}
+
+message OrderResponse {
+  string order_id = 1;
+  OrderStatus status = 2;
+  string message = 3;
+  double executed_price = 4;
+  int64 executed_time = 5;
+}
+
+enum OrderType {
+  MARKET = 0;
+  LIMIT = 1;
+  STOP = 2;
+  STOP_LIMIT = 3;
+}
+
+enum OrderSide {
+  BUY = 0;
+  SELL = 1;
+}
+
+enum OrderStatus {
+  PENDING = 0;
+  FILLED = 1;
+  PARTIALLY_FILLED = 2;
+  REJECTED = 3;
+  CANCELLED = 4;
+}
+
+// ==========================================
+// Position Messages
+// ==========================================
+message PositionsRequest {
+  string account_id = 1;
+  string symbol = 2;  // Optional filter
+}
+
+message PositionsResponse {
+  repeated Position positions = 1;
+  int32 total_count = 2;
+}
+
+message Position {
+  string position_id = 1;
+  string symbol = 2;
+  PositionSide side = 3;
+  double volume = 4;
+  double entry_price = 5;
+  double current_price = 6;
+  double unrealized_pnl = 7;
+  double realized_pnl = 8;
+  double stop_loss = 9;
+  double take_profit = 10;
+  int64 open_time = 11;
+  string strategy_id = 12;
+  string comment = 13;
+}
+
+enum PositionSide {
+  LONG = 0;
+  SHORT = 1;
+}
+
+message ClosePositionRequest {
+  string position_id = 1;
+  double volume = 2;  // Partial close if < position volume
+}
+
+message ClosePositionResponse {
+  bool success = 1;
+  string message = 2;
+  double closed_price = 3;
+  double realized_pnl = 4;
+}
+
+// ==========================================
+// Account Messages
+// ==========================================
+message AccountRequest {
+  string account_id = 1;
+}
+
+message AccountResponse {
+  string account_id = 1;
+  double balance = 2;
+  double equity = 3;
+  double margin = 4;
+  double free_margin = 5;
+  double margin_level = 6;
+  double profit = 7;
+  string currency = 8;
+  int32 leverage = 9;
+}
+
+// ==========================================
+// Streaming Messages
+// ==========================================
+message StreamRequest {
+  repeated string symbols = 1;
+  bool include_ticks = 2;
+  bool include_candles = 3;
+}
+
+message PriceUpdate {
+  string symbol = 1;
+  double bid = 2;
+  double ask = 3;
+  double last = 4;
+  int64 volume = 5;
+  int64 timestamp = 6;
+}
